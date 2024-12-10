@@ -90,6 +90,7 @@ public class MatrixCalculator extends JFrame {
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         getContentPane().add(centerPanel, BorderLayout.CENTER);
         setLocationRelativeTo(null);
+        pack();
         setVisible(true);
     }
 
