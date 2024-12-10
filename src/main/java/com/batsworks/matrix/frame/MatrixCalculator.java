@@ -11,12 +11,10 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
 
 public class MatrixCalculator extends JFrame {
 
@@ -96,25 +94,7 @@ public class MatrixCalculator extends JFrame {
     }
 
     private void setButtonsOperation(JButton button, OperationEnum operationEnum) {
-        button.addActionListener(action -> {
-            var matrixAValues = getMatrixValues(matrixAFields);
-            var matrixBValues = getMatrixValues(matrixBFields);
-            new OperationListener(matrixAFields, matrixBFields, resultArea, COLS, ROWS, operationEnum).actionPerformed(action);
-        });
-    }
-
-    private int[][] getMatrixValues(JTextField[][] matrixFields) {
-        int[][] values = new int[ROWS][COLS];
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                try {
-                    values[i][j] = Integer.parseInt(matrixFields[i][j].getText());
-                } catch (Exception e) {
-                    values[i][j] = 0;
-                }
-            }
-        }
-        return values;
+        button.addActionListener(action -> new OperationListener(matrixAFields, matrixBFields, resultArea, COLS, ROWS, operationEnum).actionPerformed(action));
     }
 
     private JPanel createMatrixPanel(JTextField[][] matrix, String title) {
