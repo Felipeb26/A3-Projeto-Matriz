@@ -11,18 +11,22 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
 public class MatrixCalculator extends JFrame {
 
     private JTextField[][] matrixAFields;
     private JTextField[][] matrixBFields;
     private final JTextArea resultArea;
-    private static final int ROWS = 3;
-    private static final int COLS = 3;
-    private static final String[] SIZES = new String[]{"2x2","3x3","4x4", "5x5", "6x6"};
+    private int ROWS = 3;
+    private int COLS = 3;
+    private static final String[] SIZES = new String[]{"2x2", "3x3", "4x4", "5x5", "6x6"};
+
 
     public MatrixCalculator() {
         setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -65,8 +69,8 @@ public class MatrixCalculator extends JFrame {
         var buttons = List.of(sumButton, subtractButton, multiplyButton, divideButton, clearButton, copyButton);
         buttons.forEach(JButtonStyle::new);
         buttons.forEach(buttonsPanel::add);
-        
-        buttonsPanel.add(matrixSize);        
+
+        buttonsPanel.add(matrixSize);
 
         setButtonsOperation(sumButton, OperationEnum.SUM);
         setButtonsOperation(subtractButton, OperationEnum.SUBTRACT);
@@ -92,10 +96,28 @@ public class MatrixCalculator extends JFrame {
     }
 
     private void setButtonsOperation(JButton button, OperationEnum operationEnum) {
-        button.addActionListener(action -> new OperationListener(this.matrixAFields, this.matrixBFields, resultArea, COLS, ROWS, operationEnum).actionPerformed(action));
+        button.addActionListener(action -> {
+            var matrixAValues = getMatrixValues(matrixAFields);
+            var matrixBValues = getMatrixValues(matrixBFields);
+            new OperationListener(matrixAFields, matrixBFields, resultArea, COLS, ROWS, operationEnum).actionPerformed(action);
+        });
     }
 
-    private JPanel createMatrixPanel(JTextField[][] matrix,  String title) {
+    private int[][] getMatrixValues(JTextField[][] matrixFields) {
+        int[][] values = new int[ROWS][COLS];
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                try {
+                    values[i][j] = Integer.parseInt(matrixFields[i][j].getText());
+                } catch (Exception e) {
+                    values[i][j] = 0;
+                }
+            }
+        }
+        return values;
+    }
+
+    private JPanel createMatrixPanel(JTextField[][] matrix, String title) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(ROWS, COLS));
         panel.setBorder(BorderFactory.createTitledBorder(title));
@@ -121,26 +143,37 @@ public class MatrixCalculator extends JFrame {
         resultArea.setText("");
     }
 
+    private void updateMatrixFields(int size) {
+        matrixAFields = new JTextField[size][size];
+        matrixBFields = new JTextField[size][size];
+    }
+
     private void createComboBox(JComboBox<String> comboBox, List<JPanel> matrizes) {
-        comboBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 30)); // Tamanho máximo
-        comboBox.setMinimumSize(new Dimension(Integer.MAX_VALUE, 40)); // Tamanho mínimo
+        comboBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+        comboBox.setMinimumSize(new Dimension(Integer.MAX_VALUE, 40));
         comboBox.addActionListener(e -> {
             String selected = (String) comboBox.getSelectedItem();
-            int size =  isNull(selected) ? 2 : Integer.parseInt(selected.substring(0, 1));
+            int size = isNull(selected) ? 2 : Integer.parseInt(selected.substring(0, 1));
+            updateMatrixFields(size);
             matrizes.forEach(matrix -> updateGrid(matrix, size));
         });
     }
 
     private void updateGrid(JPanel panel, int size) {
-        panel.removeAll(); // Remove todos os componentes atuais
-        panel.setLayout(new GridLayout(size, size, 5, 5)); // Define o novo layout
+        panel.removeAll();
+        panel.setLayout(new GridLayout(size, size, 5, 5));
 
-        for (int i = 0; i < size * size; i++) {
-            var field = new JTextField("0");
-            new JTextFieldStyle(field);
-            panel.add(field);
+        JTextField[][] matrixFields = ((TitledBorder) panel.getBorder()).getTitle().equals("Matriz A") ? matrixAFields : matrixBFields;
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrixFields[i][j] = new JTextField("0");
+                new JTextFieldStyle(matrixFields[i][j]);
+                panel.add(matrixFields[i][j]);
+            }
         }
-
+        ROWS = size;
+        COLS = size;
         panel.revalidate();
         panel.repaint();
     }
