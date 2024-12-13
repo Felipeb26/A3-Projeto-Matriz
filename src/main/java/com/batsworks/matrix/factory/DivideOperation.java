@@ -4,8 +4,8 @@ import com.batsworks.matrix.enums.OperationEnum;
 
 public class DivideOperation implements Operation {
     @Override
-    public int[][] execute(int[][] matA, int[][] matB, int cols, int rows) {
-        int[][] result = new int[rows][cols];
+    public double[][] execute(double[][] matA, double[][] matB, int cols, int rows) {
+        double[][] result = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (matB[i][j] != 0) {

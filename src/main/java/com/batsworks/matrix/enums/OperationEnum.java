@@ -1,6 +1,7 @@
 package com.batsworks.matrix.enums;
 
 public enum OperationEnum {
+
     SUM("sum", "+"),
     SUBTRACT("subtract", "-"),
     MULTIPLY("multiply", "x"),

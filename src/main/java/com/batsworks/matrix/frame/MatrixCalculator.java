@@ -4,6 +4,7 @@ import com.batsworks.matrix.enums.OperationEnum;
 import com.batsworks.matrix.listeners.OperationListener;
 import com.batsworks.matrix.styles.JButtonStyle;
 import com.batsworks.matrix.styles.JComboBoxStyle;
+import com.batsworks.matrix.styles.JTextAreaStyle;
 import com.batsworks.matrix.styles.JTextFieldStyle;
 
 import javax.swing.*;
@@ -47,15 +48,13 @@ public class MatrixCalculator extends JFrame {
 
         getContentPane().add(matricesPanel, BorderLayout.NORTH);
 
-        // Painel central para botões e resultados
         JPanel centerPanel = new JPanel(new BorderLayout());
-        // Painel de botões
+
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
         JButton sumButton = new JButton(OperationEnum.SUM.getSimbolo());
         JButton subtractButton = new JButton(OperationEnum.SUBTRACT.getSimbolo());
         JButton multiplyButton = new JButton(OperationEnum.MULTIPLY.getSimbolo());
-        JButton divideButton = new JButton(OperationEnum.DIVIDE.getSimbolo());
         JButton clearButton = new JButton("Limpar Matrizes");
         JButton copyButton = new JButton("Copiar Resultados");
 
@@ -64,7 +63,7 @@ public class MatrixCalculator extends JFrame {
         new JComboBoxStyle(matrixSize);
         createComboBox(matrixSize, matrizes);
 
-        var buttons = List.of(sumButton, subtractButton, multiplyButton, divideButton, clearButton, copyButton);
+        var buttons = List.of(sumButton, subtractButton, multiplyButton, clearButton, copyButton);
         buttons.forEach(JButtonStyle::new);
         buttons.forEach(buttonsPanel::add);
 
@@ -73,7 +72,6 @@ public class MatrixCalculator extends JFrame {
         setButtonsOperation(sumButton, OperationEnum.SUM);
         setButtonsOperation(subtractButton, OperationEnum.SUBTRACT);
         setButtonsOperation(multiplyButton, OperationEnum.MULTIPLY);
-        setButtonsOperation(divideButton, OperationEnum.DIVIDE);
 
         clearButton.addActionListener(this::clearMatrices);
         copyButton.addActionListener(this::copyResults);
@@ -82,6 +80,7 @@ public class MatrixCalculator extends JFrame {
 
         resultArea = new JTextArea(5, 30);
         resultArea.setEditable(false);
+        new JTextAreaStyle(resultArea);
         resultArea.setBorder(BorderFactory.createTitledBorder("Resultados"));
         JScrollPane scrollPane = new JScrollPane(resultArea);
         scrollPane.setBackground(new Color(0x279696));
@@ -89,6 +88,7 @@ public class MatrixCalculator extends JFrame {
 
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         getContentPane().add(centerPanel, BorderLayout.CENTER);
+
         setLocationRelativeTo(null);
         pack();
         setVisible(true);

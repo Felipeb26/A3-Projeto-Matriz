@@ -7,11 +7,10 @@ import com.batsworks.matrix.utils.Log;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 
 public class OperationListener implements ActionListener {
 
-    Log<OperationListener> log = new Log<>(OperationListener.class);
+    static Log<OperationListener> log = new Log<>(OperationListener.class);
     private final OperationEnum operationEnum;
     private final JTextField[][] matrixA;
     private final JTextField[][] matrixB;
@@ -31,11 +30,10 @@ public class OperationListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            int[][] matA = getMatrixFromInput(matrixA);
-            int[][] matB = getMatrixFromInput(matrixB);
+            double[][] matA = getMatrixFromInput(matrixA);
+            double[][] matB = getMatrixFromInput(matrixB);
 
-
-            int[][] result = OperationFactory.find(operationEnum).execute(matA, matB, cols, rows);
+            double[][] result = OperationFactory.find(operationEnum).execute(matA, matB, cols, rows);
             displayResult(result);
         } catch (NumberFormatException ex) {
             log.error(ex);
@@ -46,21 +44,21 @@ public class OperationListener implements ActionListener {
         }
     }
 
-    private int[][] getMatrixFromInput(JTextField[][] matrix) throws NumberFormatException {
-        int[][] result = new int[rows][cols];
+    private double[][] getMatrixFromInput(JTextField[][] matrix) throws NumberFormatException {
+        double[][] result = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                result[i][j] = Integer.parseInt(matrix[i][j].getText());
+                result[i][j] = Double.parseDouble(matrix[i][j].getText());
             }
         }
         return result;
     }
 
-    private void displayResult(int[][] result) {
+    private void displayResult(double[][] result) {
         StringBuilder sb = new StringBuilder();
-        for (int[] row : result) {
-            for (int val : row) {
-                sb.append(val).append("\t");
+        for (double[] row : result) {
+            for (double val : row) {
+                sb.append(String.format("%.2f", val)).append("\t");
             }
             sb.append("\n");
         }
